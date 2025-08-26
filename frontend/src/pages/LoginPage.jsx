@@ -34,8 +34,8 @@ const LoginPage = () => {
     setTimeout(() => {
       setIsLoading(false);
       toast({
-        title: "Login Successful!",
-        description: "Welcome back to Desi Marketplace",
+        title: "Welcome back!",
+        description: "You've been signed into ThriftHub successfully.",
       });
       // Redirect to home page
       window.location.href = '/';
@@ -61,7 +61,7 @@ const LoginPage = () => {
       setIsLoading(false);
       toast({
         title: "Account Created!",
-        description: "Welcome to Desi Marketplace. Please verify your email.",
+        description: "Welcome to ThriftHub. Start discovering amazing thrift finds!",
       });
       // Redirect to home page
       window.location.href = '/';
@@ -71,42 +71,42 @@ const LoginPage = () => {
   const handleSocialLogin = (provider) => {
     toast({
       title: `${provider} Login`,
-      description: `Logging in with ${provider}...`,
+      description: `Signing in with ${provider}...`,
     });
     // Implement social login
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Back Button */}
         <Button 
           variant="ghost" 
-          className="mb-6"
+          className="mb-8 text-gray-600 hover:text-gray-900"
           onClick={() => window.history.back()}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Marketplace
+          Back to ThriftHub
         </Button>
 
-        <Card className="p-8 shadow-xl border-0">
+        <Card className="p-8 shadow-sm border border-gray-200">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-blue-600 mb-2">Desi Marketplace</h1>
-            <p className="text-gray-600">Join millions of buyers and sellers</p>
+            <h1 className="text-2xl font-light text-gray-900 mb-2">Thrift<span className="font-medium">Hub</span></h1>
+            <p className="text-gray-600">Join the sustainable shopping community</p>
           </div>
 
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="register">Register</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100">
+              <TabsTrigger value="login" className="text-gray-700 data-[state=active]:bg-white data-[state=active]:text-gray-900">Login</TabsTrigger>
+              <TabsTrigger value="register" className="text-gray-700 data-[state=active]:bg-white data-[state=active]:text-gray-900">Register</TabsTrigger>
             </TabsList>
 
             {/* Login Tab */}
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-6">
                 <div>
-                  <Label htmlFor="login-email">Email</Label>
+                  <Label htmlFor="login-email" className="text-gray-700">Email</Label>
                   <div className="relative mt-2">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
@@ -115,14 +115,14 @@ const LoginPage = () => {
                       placeholder="Enter your email"
                       value={loginForm.email}
                       onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-10"
+                      className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="login-password">Password</Label>
+                  <Label htmlFor="login-password" className="text-gray-700">Password</Label>
                   <div className="relative mt-2">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
@@ -131,7 +131,7 @@ const LoginPage = () => {
                       placeholder="Enter your password"
                       value={loginForm.password}
                       onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                      className="pl-10 pr-10"
+                      className="pl-10 pr-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
                     />
                     <button
@@ -145,12 +145,12 @@ const LoginPage = () => {
                 </div>
 
                 <div className="text-right">
-                  <button type="button" className="text-blue-600 hover:underline text-sm">
+                  <button type="button" className="text-gray-600 hover:text-gray-900 text-sm">
                     Forgot Password?
                   </button>
                 </div>
 
-                <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-white" size="lg" disabled={isLoading}>
                   {isLoading ? 'Signing In...' : 'Sign In'}
                 </Button>
               </form>
@@ -160,7 +160,7 @@ const LoginPage = () => {
             <TabsContent value="register">
               <form onSubmit={handleRegister} className="space-y-4">
                 <div>
-                  <Label htmlFor="register-name">Full Name</Label>
+                  <Label htmlFor="register-name" className="text-gray-700">Full Name</Label>
                   <div className="relative mt-2">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
@@ -168,14 +168,14 @@ const LoginPage = () => {
                       placeholder="Enter your full name"
                       value={registerForm.name}
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, name: e.target.value }))}
-                      className="pl-10"
+                      className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="register-email">Email</Label>
+                  <Label htmlFor="register-email" className="text-gray-700">Email</Label>
                   <div className="relative mt-2">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
@@ -184,14 +184,14 @@ const LoginPage = () => {
                       placeholder="Enter your email"
                       value={registerForm.email}
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-10"
+                      className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="register-phone">Phone Number</Label>
+                  <Label htmlFor="register-phone" className="text-gray-700">Phone Number</Label>
                   <div className="relative mt-2">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
@@ -199,14 +199,14 @@ const LoginPage = () => {
                       placeholder="+91 98765 43210"
                       value={registerForm.phone}
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, phone: e.target.value }))}
-                      className="pl-10"
+                      className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="register-password">Password</Label>
+                  <Label htmlFor="register-password" className="text-gray-700">Password</Label>
                   <div className="relative mt-2">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
@@ -215,7 +215,7 @@ const LoginPage = () => {
                       placeholder="Create a password"
                       value={registerForm.password}
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, password: e.target.value }))}
-                      className="pl-10 pr-10"
+                      className="pl-10 pr-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
                     />
                     <button
@@ -229,7 +229,7 @@ const LoginPage = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="register-confirm-password">Confirm Password</Label>
+                  <Label htmlFor="register-confirm-password" className="text-gray-700">Confirm Password</Label>
                   <div className="relative mt-2">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
@@ -238,13 +238,13 @@ const LoginPage = () => {
                       placeholder="Confirm your password"
                       value={registerForm.confirmPassword}
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                      className="pl-10"
+                      className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
                     />
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-white" size="lg" disabled={isLoading}>
                   {isLoading ? 'Creating Account...' : 'Create Account'}
                 </Button>
               </form>
@@ -252,15 +252,15 @@ const LoginPage = () => {
           </Tabs>
 
           {/* Social Login */}
-          <div className="mt-6">
-            <Separator className="my-4" />
-            <p className="text-center text-sm text-gray-600 mb-4">Or continue with</p>
+          <div className="mt-8">
+            <Separator className="my-6" />
+            <p className="text-center text-sm text-gray-500 mb-6">Or continue with</p>
             
             <div className="grid grid-cols-2 gap-3">
               <Button 
                 variant="outline" 
                 onClick={() => handleSocialLogin('Google')}
-                className="w-full"
+                className="w-full border-gray-200 hover:bg-gray-50"
               >
                 <img 
                   src="https://developers.google.com/identity/images/g-logo.png" 
@@ -273,9 +273,9 @@ const LoginPage = () => {
               <Button 
                 variant="outline" 
                 onClick={() => handleSocialLogin('Facebook')}
-                className="w-full"
+                className="w-full border-gray-200 hover:bg-gray-50"
               >
-                <div className="w-4 h-4 mr-2 bg-blue-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-4 h-4 mr-2 bg-gray-800 rounded-sm flex items-center justify-center text-white text-xs font-bold">
                   f
                 </div>
                 Facebook
@@ -284,11 +284,11 @@ const LoginPage = () => {
           </div>
 
           {/* Terms */}
-          <p className="text-xs text-gray-500 text-center mt-6">
+          <p className="text-xs text-gray-400 text-center mt-8">
             By continuing, you agree to our{' '}
-            <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>
+            <a href="#" className="text-gray-600 hover:text-gray-900">Terms of Service</a>
             {' '}and{' '}
-            <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
+            <a href="#" className="text-gray-600 hover:text-gray-900">Privacy Policy</a>
           </p>
         </Card>
       </div>
