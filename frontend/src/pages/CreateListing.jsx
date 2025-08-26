@@ -27,19 +27,20 @@ const CreateListing = () => {
 
   const categories = [
     { value: 'electronics', label: 'Electronics' },
+    { value: 'fashion', label: 'Fashion & Style' },
     { value: 'vehicles', label: 'Vehicles' },
-    { value: 'property', label: 'Property Rentals' },
-    { value: 'apparel', label: 'Apparel' },
-    { value: 'entertainment', label: 'Entertainment' },
-    { value: 'classifieds', label: 'Classifieds' }
+    { value: 'home', label: 'Home & Garden' },
+    { value: 'books', label: 'Books & Media' },
+    { value: 'sports', label: 'Sports & Hobbies' },
+    { value: 'collectibles', label: 'Vintage & Collectibles' }
   ];
 
   const conditions = [
-    { value: 'new', label: 'New' },
     { value: 'like-new', label: 'Like New' },
+    { value: 'excellent', label: 'Excellent' },
     { value: 'good', label: 'Good' },
     { value: 'fair', label: 'Fair' },
-    { value: 'poor', label: 'Poor' }
+    { value: 'vintage', label: 'Vintage' }
   ];
 
   const handleImageUpload = (files) => {
@@ -136,7 +137,7 @@ const CreateListing = () => {
     console.log('Listing data:', { ...formData, images });
     toast({
       title: "Listing Created!",
-      description: "Your item has been listed successfully.",
+      description: "Your thrift item has been listed successfully.",
     });
 
     // Reset form
@@ -156,37 +157,37 @@ const CreateListing = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-6">
-          <Button variant="ghost" className="mb-4" onClick={() => window.history.back()}>
+        <div className="mb-8">
+          <Button variant="ghost" className="mb-6 text-gray-600 hover:text-gray-900" onClick={() => window.history.back()}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900">Create a New Listing</h1>
-          <p className="text-gray-600 mt-2">Sell your item quickly and safely on Desi Marketplace</p>
+          <h1 className="text-3xl font-light text-gray-900">List Your Thrift Item</h1>
+          <p className="text-gray-500 mt-2">Give your pre-loved items a new home</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Image Upload */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Photos</h2>
-            <p className="text-gray-600 mb-4">Add up to 5 photos. The first photo will be your main image.</p>
+          <Card className="p-8 border border-gray-200">
+            <h2 className="text-xl font-medium mb-2 text-gray-900">Photos</h2>
+            <p className="text-gray-500 mb-6">Add up to 5 photos. The first photo will be your cover image.</p>
             
             {/* Image Upload Area */}
             <div
-              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+              className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200 ${
                 dragOver 
-                  ? 'border-blue-400 bg-blue-50' 
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-gray-400 bg-gray-50' 
+                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-25'
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
-              <Camera className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">Drag photos here or click to upload</h3>
-              <p className="text-gray-600 mb-4">Support: JPG, PNG, WEBP (Max 10MB per photo)</p>
+              <Camera className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Add your photos</h3>
+              <p className="text-gray-500 mb-6">Drag photos here or click to browse</p>
               
               <input
                 type="file"
@@ -197,7 +198,7 @@ const CreateListing = () => {
                 id="image-upload"
               />
               <label htmlFor="image-upload">
-                <Button type="button" variant="outline" className="cursor-pointer">
+                <Button type="button" variant="outline" className="cursor-pointer border-gray-300 hover:bg-gray-50">
                   <Upload className="w-4 h-4 mr-2" />
                   Choose Photos
                 </Button>
@@ -206,11 +207,11 @@ const CreateListing = () => {
 
             {/* Image Previews */}
             {images.length > 0 && (
-              <div className="mt-6">
-                <h3 className="font-medium mb-3">Photos ({images.length}/5)</h3>
+              <div className="mt-8">
+                <h3 className="font-medium mb-4 text-gray-900">Photos ({images.length}/5)</h3>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   {images.map((image, index) => (
-                    <div key={image.id} className="relative aspect-square">
+                    <div key={image.id} className="relative aspect-square group">
                       <img
                         src={image.preview}
                         alt={`Upload ${index + 1}`}
@@ -219,12 +220,12 @@ const CreateListing = () => {
                       <button
                         type="button"
                         onClick={() => removeImage(image.id)}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                        className="absolute -top-2 -right-2 bg-gray-900 text-white rounded-full p-1.5 hover:bg-gray-800 transition-colors opacity-0 group-hover:opacity-100"
                       >
                         <X className="w-3 h-3" />
                       </button>
                       {index === 0 && (
-                        <Badge className="absolute bottom-2 left-2">Main Photo</Badge>
+                        <Badge className="absolute bottom-2 left-2 bg-gray-900">Cover Photo</Badge>
                       )}
                     </div>
                   ))}
@@ -234,37 +235,37 @@ const CreateListing = () => {
           </Card>
 
           {/* Basic Information */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
+          <Card className="p-8 border border-gray-200">
+            <h2 className="text-xl font-medium mb-6 text-gray-900">Item Details</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="title">Title *</Label>
+              <div className="md:col-span-2">
+                <Label htmlFor="title" className="text-gray-700">Title *</Label>
                 <Input
                   id="title"
-                  placeholder="e.g., iPhone 14 Pro Max - Excellent Condition"
+                  placeholder="e.g., Vintage Levi's Jeans - Excellent Condition"
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
-                  className="mt-2"
+                  className="mt-2 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                 />
               </div>
 
               <div>
-                <Label htmlFor="price">Price (₹) *</Label>
+                <Label htmlFor="price" className="text-gray-700">Price (₹) *</Label>
                 <Input
                   id="price"
                   type="number"
                   placeholder="0"
                   value={formData.price}
                   onChange={(e) => handleInputChange('price', e.target.value)}
-                  className="mt-2"
+                  className="mt-2 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                 />
               </div>
 
               <div>
-                <Label htmlFor="category">Category *</Label>
+                <Label htmlFor="category" className="text-gray-700">Category *</Label>
                 <Select onValueChange={(value) => handleInputChange('category', value)}>
-                  <SelectTrigger className="mt-2">
+                  <SelectTrigger className="mt-2 border-gray-200 focus:border-gray-400 focus:ring-gray-400">
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -278,9 +279,9 @@ const CreateListing = () => {
               </div>
 
               <div>
-                <Label htmlFor="condition">Condition</Label>
+                <Label htmlFor="condition" className="text-gray-700">Condition</Label>
                 <Select onValueChange={(value) => handleInputChange('condition', value)}>
-                  <SelectTrigger className="mt-2">
+                  <SelectTrigger className="mt-2 border-gray-200 focus:border-gray-400 focus:ring-gray-400">
                     <SelectValue placeholder="Select condition" />
                   </SelectTrigger>
                   <SelectContent>
@@ -292,58 +293,59 @@ const CreateListing = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              <div>
+                <Label htmlFor="location" className="text-gray-700">Location</Label>
+                <div className="relative mt-2">
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    id="location"
+                    placeholder="e.g., Bandra West, Mumbai, Maharashtra"
+                    value={formData.location}
+                    onChange={(e) => handleInputChange('location', e.target.value)}
+                    className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="mt-6">
-              <Label htmlFor="description">Description *</Label>
+              <Label htmlFor="description" className="text-gray-700">Description *</Label>
               <Textarea
                 id="description"
-                placeholder="Describe your item in detail. Include features, condition, reason for selling, etc."
+                placeholder="Describe your item's condition, history, and why you're selling it..."
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                className="mt-2 min-h-[120px]"
+                className="mt-2 min-h-[120px] border-gray-200 focus:border-gray-400 focus:ring-gray-400"
               />
-            </div>
-
-            <div className="mt-6">
-              <Label htmlFor="location">Location</Label>
-              <div className="relative mt-2">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  id="location"
-                  placeholder="e.g., Bandra West, Mumbai, Maharashtra"
-                  value={formData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
-                  className="pl-10"
-                />
-              </div>
             </div>
           </Card>
 
           {/* Tags */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Tags (Optional)</h2>
-            <p className="text-gray-600 mb-4">Add tags to help buyers find your item</p>
+          <Card className="p-8 border border-gray-200">
+            <h2 className="text-xl font-medium mb-2 text-gray-900">Tags</h2>
+            <p className="text-gray-500 mb-6">Add tags to help buyers discover your item</p>
             
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-3 mb-4">
               <Input
                 placeholder="Add a tag..."
                 value={currentTag}
                 onChange={(e) => setCurrentTag(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                className="border-gray-200 focus:border-gray-400 focus:ring-gray-400"
               />
-              <Button type="button" onClick={addTag} variant="outline">
-                Add
+              <Button type="button" onClick={addTag} variant="outline" className="border-gray-300 hover:bg-gray-50">
+                Add Tag
               </Button>
             </div>
 
             {formData.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {formData.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="cursor-pointer">
+                  <Badge key={tag} variant="secondary" className="cursor-pointer bg-gray-100 text-gray-700 hover:bg-gray-200">
                     {tag}
                     <X 
-                      className="w-3 h-3 ml-1" 
+                      className="w-3 h-3 ml-2" 
                       onClick={() => removeTag(tag)}
                     />
                   </Badge>
@@ -354,11 +356,11 @@ const CreateListing = () => {
 
           {/* Submit */}
           <div className="flex justify-end space-x-4">
-            <Button type="button" variant="outline">
+            <Button type="button" variant="outline" className="border-gray-300 hover:bg-gray-50">
               Save as Draft
             </Button>
-            <Button type="submit" size="lg">
-              Create Listing
+            <Button type="submit" size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-8">
+              List Item
             </Button>
           </div>
         </form>
