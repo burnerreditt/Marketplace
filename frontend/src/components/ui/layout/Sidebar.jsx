@@ -1,15 +1,16 @@
 import React from 'react';
-import { Home, Grid, Car, Home as HomeIcon, Smartphone, Gamepad2, ShoppingBag, Briefcase, MapPin, Filter } from 'lucide-react';
+import { Grid, Smartphone, Gamepad2, ShoppingBag, Shirt, Car, Home as HomeIcon, Book, Music, Camera, Filter, MapPin } from 'lucide-react';
 
 const Sidebar = ({ activeCategory, onCategoryChange }) => {
   const categories = [
     { id: 'all', name: 'Browse all', icon: Grid },
-    { id: 'vehicles', name: 'Vehicles', icon: Car },
-    { id: 'property', name: 'Property Rentals', icon: HomeIcon },
     { id: 'electronics', name: 'Electronics', icon: Smartphone },
-    { id: 'entertainment', name: 'Entertainment', icon: Gamepad2 },
-    { id: 'apparel', name: 'Apparel', icon: ShoppingBag },
-    { id: 'classifieds', name: 'Classifieds', icon: Briefcase }
+    { id: 'fashion', name: 'Fashion & Style', icon: Shirt },
+    { id: 'vehicles', name: 'Vehicles', icon: Car },
+    { id: 'home', name: 'Home & Garden', icon: HomeIcon },
+    { id: 'books', name: 'Books & Media', icon: Book },
+    { id: 'sports', name: 'Sports & Hobbies', icon: Gamepad2 },
+    { id: 'collectibles', name: 'Vintage & Collectibles', icon: Camera }
   ];
 
   const locations = [
@@ -22,21 +23,30 @@ const Sidebar = ({ activeCategory, onCategoryChange }) => {
   ];
 
   const priceRanges = [
-    'Under ₹500',
+    'Under ₹100',
+    '₹100 - ₹500',
     '₹500 - ₹2,000',
     '₹2,000 - ₹10,000',
-    '₹10,000 - ₹50,000',
-    'Above ₹50,000'
+    'Above ₹10,000'
+  ];
+
+  const conditions = [
+    'Like New',
+    'Excellent',
+    'Good',
+    'Fair',
+    'Vintage'
   ];
 
   return (
-    <div className="w-80 bg-white border-r border-gray-200 h-screen overflow-y-auto">
-      <div className="p-4">
+    <div className="w-80 bg-white border-r border-gray-100 h-screen overflow-y-auto">
+      <div className="p-6">
         {/* Marketplace Title */}
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Marketplace</h2>
+        <h2 className="text-xl font-light text-gray-900 mb-8">Discover</h2>
 
         {/* Categories */}
-        <div className="mb-8">
+        <div className="mb-10">
+          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-4">Categories</h3>
           <div className="space-y-1">
             {categories.map((category) => {
               const IconComponent = category.icon;
@@ -44,54 +54,64 @@ const Sidebar = ({ activeCategory, onCategoryChange }) => {
                 <button
                   key={category.id}
                   onClick={() => onCategoryChange(category.id)}
-                  className={`w-full flex items-center px-3 py-2.5 text-left rounded-lg transition-colors ${
+                  className={`w-full flex items-center px-3 py-2.5 text-left rounded-lg transition-all duration-200 ${
                     activeCategory === category.id 
-                      ? 'bg-blue-50 text-blue-600' 
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-gray-100 text-gray-900 font-medium' 
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`}
                 >
-                  <IconComponent className="w-5 h-5 mr-3" />
-                  <span className="font-medium">{category.name}</span>
+                  <IconComponent className="w-4 h-4 mr-3" />
+                  <span className="text-sm">{category.name}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Location Filter */}
-        <div className="mb-8">
-          <div className="flex items-center mb-3">
-            <MapPin className="w-5 h-5 text-gray-500 mr-2" />
-            <h3 className="text-lg font-semibold text-gray-900">Location</h3>
-          </div>
+        {/* Condition Filter */}
+        <div className="mb-10">
+          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-4">Condition</h3>
           <div className="space-y-2">
-            {locations.map((location, index) => (
-              <label key={index} className="flex items-center">
+            {conditions.map((condition, index) => (
+              <label key={index} className="flex items-center group cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-500 focus:ring-1"
                 />
-                <span className="ml-2 text-sm text-gray-700">{location}</span>
+                <span className="ml-3 text-sm text-gray-600 group-hover:text-gray-900">{condition}</span>
               </label>
             ))}
           </div>
         </div>
 
         {/* Price Filter */}
-        <div className="mb-8">
-          <div className="flex items-center mb-3">
-            <Filter className="w-5 h-5 text-gray-500 mr-2" />
-            <h3 className="text-lg font-semibold text-gray-900">Price Range</h3>
-          </div>
+        <div className="mb-10">
+          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-4">Price Range</h3>
           <div className="space-y-2">
             {priceRanges.map((range, index) => (
-              <label key={index} className="flex items-center">
+              <label key={index} className="flex items-center group cursor-pointer">
                 <input
                   type="radio"
                   name="priceRange"
-                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  className="w-4 h-4 text-gray-900 border-gray-300 focus:ring-gray-500 focus:ring-1"
                 />
-                <span className="ml-2 text-sm text-gray-700">{range}</span>
+                <span className="ml-3 text-sm text-gray-600 group-hover:text-gray-900">{range}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Location Filter */}
+        <div className="mb-8">
+          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-4">Location</h3>
+          <div className="space-y-2">
+            {locations.slice(0, 4).map((location, index) => (
+              <label key={index} className="flex items-center group cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-500 focus:ring-1"
+                />
+                <span className="ml-3 text-sm text-gray-600 group-hover:text-gray-900">{location}</span>
               </label>
             ))}
           </div>
