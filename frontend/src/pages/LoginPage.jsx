@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -6,12 +6,13 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Separator } from '../components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { useToast } from '../hooks/use-toast';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const { toast } = useToast();
+  const { login, register, isLoading, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   
   const [loginForm, setLoginForm] = useState({
     email: '',
@@ -26,54 +27,48 @@ const LoginPage = () => {
     confirmPassword: ''
   });
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    // Mock login
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Welcome back!",
-        description: "You've been signed into ThriftHub successfully.",
-      });
-      // Redirect to home page
-      window.location.href = '/';
-    }, 1500);
+    try {
+      await login(loginForm);
+      navigate('/');
+    } catch (error) {
+      // Error is handled by AuthContext
+    }
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     
     if (registerForm.password !== registerForm.confirmPassword) {
-      toast({
-        title: "Password Mismatch",
-        description: "Passwords don't match. Please try again.",
-        variant: "destructive"
-      });
-      return;
+      return; // AuthContext will show error
     }
 
-    setIsLoading(true);
-
-    // Mock registration
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Account Created!",
-        description: "Welcome to ThriftHub. Start discovering amazing thrift finds!",
-      });
-      // Redirect to home page
-      window.location.href = '/';
-    }, 1500);
+    try {
+      const userData = {
+        name: registerForm.name,
+        email: registerForm.email,
+        phone: registerForm.phone,
+        password: registerForm.password
+      };
+      
+      await register(userData);
+      navigate('/');
+    } catch (error) {
+      // Error is handled by AuthContext
+    }
   };
 
   const handleSocialLogin = (provider) => {
-    toast({
-      title: `${provider} Login`,
-      description: `Signing in with ${provider}...`,
-    });
-    // Implement social login
+    // TODO: Implement social login
+    console.log(`Social login with ${provider} not implemented yet`);
   };
 
   return (
@@ -83,7 +78,7 @@ const LoginPage = () => {
         <Button 
           variant="ghost" 
           className="mb-8 text-gray-600 hover:text-gray-900"
-          onClick={() => window.history.back()}
+          onClick={() => navigate('/')}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to ThriftHub
@@ -117,6 +112,7 @@ const LoginPage = () => {
                       onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
                       className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -133,6 +129,7 @@ const LoginPage = () => {
                       onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
                       className="pl-10 pr-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
+                      disabled={isLoading}
                     />
                     <button
                       type="button"
@@ -150,7 +147,12 @@ const LoginPage = () => {
                   </button>
                 </div>
 
-                <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-white" size="lg" disabled={isLoading}>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gray-900 hover:bg-gray-800 text-white" 
+                  size="lg" 
+                  disabled={isLoading}
+                >
                   {isLoading ? 'Signing In...' : 'Sign In'}
                 </Button>
               </form>
@@ -170,6 +172,7 @@ const LoginPage = () => {
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, name: e.target.value }))}
                       className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -186,6 +189,7 @@ const LoginPage = () => {
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, email: e.target.value }))}
                       className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -201,6 +205,7 @@ const LoginPage = () => {
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, phone: e.target.value }))}
                       className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -217,6 +222,7 @@ const LoginPage = () => {
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, password: e.target.value }))}
                       className="pl-10 pr-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
+                      disabled={isLoading}
                     />
                     <button
                       type="button"
@@ -240,11 +246,17 @@ const LoginPage = () => {
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-white" size="lg" disabled={isLoading}>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gray-900 hover:bg-gray-800 text-white" 
+                  size="lg" 
+                  disabled={isLoading}
+                >
                   {isLoading ? 'Creating Account...' : 'Create Account'}
                 </Button>
               </form>
@@ -261,6 +273,7 @@ const LoginPage = () => {
                 variant="outline" 
                 onClick={() => handleSocialLogin('Google')}
                 className="w-full border-gray-200 hover:bg-gray-50"
+                disabled={isLoading}
               >
                 <img 
                   src="https://developers.google.com/identity/images/g-logo.png" 
@@ -274,6 +287,7 @@ const LoginPage = () => {
                 variant="outline" 
                 onClick={() => handleSocialLogin('Facebook')}
                 className="w-full border-gray-200 hover:bg-gray-50"
+                disabled={isLoading}
               >
                 <div className="w-4 h-4 mr-2 bg-gray-800 rounded-sm flex items-center justify-center text-white text-xs font-bold">
                   f
