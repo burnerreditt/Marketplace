@@ -5,6 +5,8 @@ import HomePage from "./pages/HomePage";
 import ProductDetail from "./pages/ProductDetail";
 import CreateListing from "./pages/CreateListing";
 import LoginPage from "./pages/LoginPage";
+import MessagesPage from "./pages/MessagesPage";
+import UserProfile from "./pages/UserProfile";
 import { Toaster } from "./components/ui/toaster";
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/create" element={<CreateListing />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/profile/:id" element={<UserProfile />} />
         </Routes>
         <Toaster />
       </BrowserRouter>
