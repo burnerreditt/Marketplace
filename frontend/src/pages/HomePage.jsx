@@ -3,10 +3,12 @@ import Header from '../components/ui/layout/Header';
 import Sidebar from '../components/ui/layout/Sidebar';
 import ProductCard from '../components/ui/product/ProductCard';
 import { mockProducts } from '../utils/mockData';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [favorites, setFavorites] = useState(new Set([2, 5])); // Mock favorites
+  const navigate = useNavigate();
 
   // Filter products based on active category
   const filteredProducts = useMemo(() => {
@@ -29,8 +31,7 @@ const HomePage = () => {
   };
 
   const handleProductClick = (product) => {
-    // Navigate to product detail page (will implement routing later)
-    console.log('Product clicked:', product);
+    navigate(`/product/${product.id}`);
   };
 
   // Update products with favorite status
