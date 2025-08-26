@@ -1,33 +1,106 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/ui/layout/Header';
 import Sidebar from '../components/ui/layout/Sidebar';
 import ProductCard from '../components/ui/product/ProductCard';
-import { mockProducts } from '../utils/mockData';
+import { productsAPI, favoritesAPI } from '../utils/api';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../hooks/use-toast';
 
 const HomePage = () => {
   const [activeCategory, setActiveCategory] = useState('all');
-  const [favorites, setFavorites] = useState(new Set([2, 5])); // Mock favorites
+  const [products, setProducts] = useState([]);
+  const [favorites, setFavorites] = useState(new Set());
+  const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  // Filter products based on active category
-  const filteredProducts = useMemo(() => {
-    if (activeCategory === 'all') {
-      return mockProducts;
-    }
-    return mockProducts.filter(product => product.category === activeCategory);
-  }, [activeCategory]);
-
-  const handleFavorite = (productId) => {
-    setFavorites(prev => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(productId)) {
-        newFavorites.delete(productId);
-      } else {
-        newFavorites.add(productId);
+  // Fetch products when category changes
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const params = {};
+        if (activeCategory !== 'all') {
+          params.category = activeCategory;
+        }
+        
+        const data = await productsAPI.getProducts(params);
+        setProducts(data.products || []);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load products. Please try again.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
       }
-      return newFavorites;
-    });
+    };
+
+    fetchProducts();
+  }, [activeCategory, toast]);
+
+  // Fetch user favorites if authenticated
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      if (isAuthenticated) {
+        try {
+          const favoriteProducts = await favoritesAPI.getFavorites();
+          const favoriteIds = new Set(favoriteProducts.map(p => p.id));
+          setFavorites(favoriteIds);
+        } catch (error) {
+          console.error('Error fetching favorites:', error);
+        }
+      }
+    };
+
+    fetchFavorites();
+  }, [isAuthenticated]);
+
+  const handleFavorite = async (productId) => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please login to save favorites.",
+        variant: "destructive"
+      });
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const isFavorited = favorites.has(productId);
+      
+      if (isFavorited) {
+        await favoritesAPI.removeFavorite(productId);
+        setFavorites(prev => {
+          const newFavorites = new Set(prev);
+          newFavorites.delete(productId);
+          return newFavorites;
+        });
+        toast({
+          title: "Removed from favorites",
+          description: "Item removed from your favorites list."
+        });
+      } else {
+        await favoritesAPI.addFavorite(productId);
+        setFavorites(prev => new Set([...prev, productId]));
+        toast({
+          title: "Added to favorites",
+          description: "Item saved to your favorites list."
+        });
+      }
+    } catch (error) {
+      console.error('Error updating favorite:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update favorites. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleProductClick = (product) => {
@@ -35,9 +108,14 @@ const HomePage = () => {
   };
 
   // Update products with favorite status
-  const productsWithFavorites = filteredProducts.map(product => ({
+  const productsWithFavorites = products.map(product => ({
     ...product,
-    isFavorited: favorites.has(product.id)
+    isFavorited: favorites.has(product.id),
+    // Format the data for the ProductCard component
+    postedDate: new Date(product.created_at).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short'
+    }) + ' ago'
   }));
 
   const getCategoryTitle = () => {
@@ -90,24 +168,39 @@ const HomePage = () => {
                 {getCategorySubtitle()}
               </p>
               <p className="text-sm text-gray-400">
-                {filteredProducts.length} items available
+                {productsWithFavorites.length} items available
               </p>
             </div>
 
+            {/* Loading State */}
+            {isLoading && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-gray-200 rounded-xl aspect-square mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {productsWithFavorites.map(product => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onFavorite={handleFavorite}
-                  onProductClick={handleProductClick}
-                />
-              ))}
-            </div>
+            {!isLoading && productsWithFavorites.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {productsWithFavorites.map(product => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onFavorite={handleFavorite}
+                    onProductClick={handleProductClick}
+                  />
+                ))}
+              </div>
+            )}
 
             {/* Empty State */}
-            {filteredProducts.length === 0 && (
+            {!isLoading && productsWithFavorites.length === 0 && (
               <div className="text-center py-16">
                 <div className="text-gray-300 text-8xl mb-6">🔍</div>
                 <h3 className="text-xl font-light text-gray-900 mb-3">
