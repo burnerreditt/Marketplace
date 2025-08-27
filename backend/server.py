@@ -376,7 +376,7 @@ async def add_favorite(product_id: str, current_user: dict = Depends(get_current
     existing = await db.favorites.find_one({
         "user_id": current_user["id"],
         "product_id": product_id
-    })
+    }, {"_id": 0})
     
     if existing:
         raise HTTPException(status_code=400, detail="Already favorited")
