@@ -186,8 +186,8 @@ const CreateListing = () => {
               onDrop={handleDrop}
             >
               <Camera className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Add your photos</h3>
-              <p className="text-gray-500 mb-6">Drag photos here or click to browse</p>
+              <h3 className="text-lg font-spartan font-medium text-gray-900 mb-2">Add your photos</h3>
+              <p className="text-gray-500 font-baskerville mb-6">Drag photos here or click to browse</p>
               
               <input
                 type="file"
