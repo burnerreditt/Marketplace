@@ -171,8 +171,8 @@ const CreateListing = () => {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Image Upload */}
           <Card className="p-8 border border-gray-200">
-            <h2 className="text-xl font-medium mb-2 text-gray-900">Photos</h2>
-            <p className="text-gray-500 mb-6">Add up to 5 photos. The first photo will be your cover image.</p>
+            <h2 className="text-xl font-spartan font-medium mb-2 text-gray-900">Photos</h2>
+            <p className="text-gray-500 font-baskerville mb-6">Add up to 5 photos. The first photo will be your cover image.</p>
             
             {/* Image Upload Area */}
             <div
