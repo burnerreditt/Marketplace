@@ -640,7 +640,7 @@ async def update_product(product_id: str, update_data: ProductUpdate, current_us
     if update_fields:
         update_fields["updated_at"] = datetime.utcnow()
         
-        result = await db.users.update_one(
+        result = await db.products.update_one(
             {"id": product_id},
             {"$set": update_fields}
         )
