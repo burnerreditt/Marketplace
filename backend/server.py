@@ -491,12 +491,12 @@ class MessageCreate(BaseModel):
 async def send_message(message_data: MessageCreate, current_user: dict = Depends(get_current_user)):
     """Send a new message"""
     # Verify recipient exists
-    recipient = await db.users.find_one({"id": message_data.recipient_id})
+    recipient = await db.users.find_one({"id": message_data.recipient_id}, {"_id": 0})
     if not recipient:
         raise HTTPException(status_code=404, detail="Recipient not found")
     
     # Verify product exists
-    product = await db.products.find_one({"id": message_data.product_id})
+    product = await db.products.find_one({"id": message_data.product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
