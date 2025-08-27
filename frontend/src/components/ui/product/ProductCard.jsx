@@ -67,7 +67,7 @@ const ProductCard = ({ product, onFavorite, onProductClick }) => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <span className="text-xs text-gray-600 font-medium">{product.seller.name}</span>
+              <span className="text-xs text-gray-600 font-spartan font-medium">{product.seller.name}</span>
               {product.seller.isVerified && (
                 <div className="ml-1 w-3 h-3 bg-gray-900 rounded-full flex items-center justify-center">
                   <div className="w-1 h-1 bg-white rounded-full"></div>
