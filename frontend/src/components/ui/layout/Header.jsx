@@ -47,7 +47,7 @@ const Header = () => {
               onClick={() => navigate('/create')}
             >
               <Plus className="w-4 h-4" />
-              <span className="font-medium">Sell</span>
+              <span className="font-spartan font-medium">Sell</span>
             </Button>
             
             <Button 
