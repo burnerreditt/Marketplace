@@ -44,10 +44,10 @@ const ProductCard = ({ product, onFavorite, onProductClick }) => {
         <div className="p-4">
           {/* Price */}
           <div className="mb-2">
-            <span className="text-lg font-semibold text-gray-900">{formatPrice(product.price)}</span>
+            <span className="text-lg font-spartan font-semibold text-gray-900">{formatPrice(product.price)}</span>
           </div>
           
-          <h3 className="font-medium text-gray-900 line-clamp-2 mb-2 text-sm leading-relaxed">{product.title}</h3>
+          <h3 className="font-baskerville font-medium text-gray-900 line-clamp-2 mb-2 text-sm leading-relaxed">{product.title}</h3>
           
           {/* Location and Date */}
           <div className="flex items-center text-xs text-gray-500 mb-3">
