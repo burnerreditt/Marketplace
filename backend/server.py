@@ -419,9 +419,9 @@ async def get_user_conversations(current_user: dict = Depends(get_current_user))
         
         if conversation_key not in conversations:
             # Get other user info
-            other_user = await db.users.find_one({"id": other_user_id})
+            other_user = await db.users.find_one({"id": other_user_id}, {"_id": 0})
             # Get product info
-            product = await db.products.find_one({"id": message["product_id"]})
+            product = await db.products.find_one({"id": message["product_id"]}, {"_id": 0})
             
             conversations[conversation_key] = {
                 "id": conversation_key,
