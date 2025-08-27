@@ -273,7 +273,7 @@ async def get_products(
     
     # Get seller info for each product
     for product in products:
-        seller = await db.users.find_one({"id": product["seller_id"]})
+        seller = await db.users.find_one({"id": product["seller_id"]}, {"_id": 0})
         if seller:
             product["seller"] = {
                 "id": seller["id"],
