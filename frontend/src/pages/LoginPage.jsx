@@ -87,8 +87,8 @@ const LoginPage = () => {
         <Card className="p-8 shadow-sm border border-gray-200">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-light text-gray-900 mb-2">Thrift<span className="font-medium">Hub</span></h1>
-            <p className="text-gray-600">Join the sustainable shopping community</p>
+            <h1 className="text-2xl font-spartan font-light text-gray-900 mb-2">Thrift<span className="font-medium">Hub</span></h1>
+            <p className="text-gray-600 font-baskerville">Join the sustainable shopping community</p>
           </div>
 
           <Tabs defaultValue="login" className="w-full">
