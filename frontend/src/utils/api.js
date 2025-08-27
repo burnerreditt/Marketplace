@@ -177,21 +177,6 @@ export const usersAPI = {
   }
 };
 
-// Enhanced Products API (add missing methods)
-export const productsAPI = {
-  ...productsAPI,
-  
-  updateProduct: async (productId, updateData) => {
-    const response = await api.put(`/products/${productId}`, updateData);
-    return response.data;
-  },
-
-  deleteProduct: async (productId) => {
-    const response = await api.delete(`/products/${productId}`);
-    return response.data;
-  }
-};
-
 // Error handling interceptor
 api.interceptors.response.use(
   (response) => response,
