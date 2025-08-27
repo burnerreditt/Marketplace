@@ -110,6 +110,16 @@ export const productsAPI = {
     };
     const response = await api.get('/products', { params });
     return response.data;
+  },
+
+  updateProduct: async (productId, updateData) => {
+    const response = await api.put(`/products/${productId}`, updateData);
+    return response.data;
+  },
+
+  deleteProduct: async (productId) => {
+    const response = await api.delete(`/products/${productId}`);
+    return response.data;
   }
 };
 
