@@ -131,6 +131,57 @@ export const favoritesAPI = {
   }
 };
 
+// Messages API
+export const messagesAPI = {
+  getConversations: async () => {
+    const response = await api.get('/messages');
+    return response.data;
+  },
+
+  getConversationMessages: async (conversationId) => {
+    const response = await api.get(`/messages/${conversationId}`);
+    return response.data;
+  },
+
+  sendMessage: async (messageData) => {
+    const response = await api.post('/messages', messageData);
+    return response.data;
+  }
+};
+
+// Users API
+export const usersAPI = {
+  getUserProfile: async (userId) => {
+    const response = await api.get(`/users/${userId}`);
+    return response.data;
+  },
+
+  updateProfile: async (userId, updateData) => {
+    const response = await api.put(`/users/${userId}`, updateData);
+    return response.data;
+  },
+
+  getUserProducts: async (userId, params = {}) => {
+    const response = await api.get(`/users/${userId}/products`, { params });
+    return response.data;
+  }
+};
+
+// Enhanced Products API (add missing methods)
+export const productsAPI = {
+  ...productsAPI,
+  
+  updateProduct: async (productId, updateData) => {
+    const response = await api.put(`/products/${productId}`, updateData);
+    return response.data;
+  },
+
+  deleteProduct: async (productId) => {
+    const response = await api.delete(`/products/${productId}`);
+    return response.data;
+  }
+};
+
 // Error handling interceptor
 api.interceptors.response.use(
   (response) => response,
