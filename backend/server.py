@@ -611,7 +611,7 @@ class ProductUpdate(BaseModel):
 async def update_product(product_id: str, update_data: ProductUpdate, current_user: dict = Depends(get_current_user)):
     """Update product (owner only)"""
     # Verify product exists and user is owner
-    product = await db.products.find_one({"id": product_id})
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
