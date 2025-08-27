@@ -164,8 +164,8 @@ const CreateListing = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
-          <h1 className="text-3xl font-light text-gray-900">List Your Thrift Item</h1>
-          <p className="text-gray-500 mt-2">Give your pre-loved items a new home</p>
+          <h1 className="text-3xl font-spartan font-light text-gray-900">List Your Thrift Item</h1>
+          <p className="text-gray-500 font-baskerville mt-2">Give your pre-loved items a new home</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
