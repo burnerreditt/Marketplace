@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://desi-marketplace-1.preview.emergentagent.com/api"
+BASE_URL = "https://design-refresh-29.preview.emergentagent.com/api"
 TEST_USER_EMAIL = f"testuser_{uuid.uuid4().hex[:8]}@example.com"
 TEST_USER_PASSWORD = "SecurePassword123!"
 TEST_USER_NAME = "John Doe"
