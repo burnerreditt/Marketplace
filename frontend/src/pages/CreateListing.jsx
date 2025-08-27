@@ -323,8 +323,8 @@ const CreateListing = () => {
 
           {/* Tags */}
           <Card className="p-8 border border-gray-200">
-            <h2 className="text-xl font-medium mb-2 text-gray-900">Tags</h2>
-            <p className="text-gray-500 mb-6">Add tags to help buyers discover your item</p>
+            <h2 className="text-xl font-spartan font-medium mb-2 text-gray-900">Tags</h2>
+            <p className="text-gray-500 font-baskerville mb-6">Add tags to help buyers discover your item</p>
             
             <div className="flex gap-3 mb-4">
               <Input
