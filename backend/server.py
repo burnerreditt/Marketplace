@@ -515,7 +515,7 @@ async def send_message(message_data: MessageCreate, current_user: dict = Depends
 @api_router.get("/users/{user_id}")
 async def get_user_profile(user_id: str):
     """Get public user profile"""
-    user = await db.users.find_one({"id": user_id})
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
