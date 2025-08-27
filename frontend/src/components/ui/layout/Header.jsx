@@ -21,7 +21,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center cursor-pointer" onClick={() => navigate('/')}>
-            <h1 className="text-2xl font-light text-gray-900">Thrift<span className="font-medium">Hub</span></h1>
+            <h1 className="text-2xl font-spartan font-light text-gray-900">Thrift<span className="font-medium">Hub</span></h1>
           </div>
 
           {/* Search Bar */}
