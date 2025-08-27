@@ -570,7 +570,7 @@ async def update_user_profile(user_id: str, update_data: UserUpdate, current_use
         raise HTTPException(status_code=404, detail="User not found")
     
     # Return updated user
-    updated_user = await db.users.find_one({"id": user_id})
+    updated_user = await db.users.find_one({"id": user_id}, {"_id": 0})
     return {k: v for k, v in updated_user.items() if k != "password_hash"}
 
 @api_router.get("/users/{user_id}/products")
