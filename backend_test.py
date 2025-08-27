@@ -477,6 +477,449 @@ class ThriftHubAPITester:
             self.log_result("Favorites Without Auth", False, f"Exception: {str(e)}")
             return False
     
+    # NEW API TESTS - Message APIs
+    def test_get_user_conversations(self):
+        """Test getting user conversations"""
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            response = requests.get(f"{self.base_url}/messages", headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list):
+                    self.log_result("Get User Conversations", True, f"Retrieved {len(data)} conversations")
+                    return True
+                else:
+                    self.log_result("Get User Conversations", False, "Response is not a list", data)
+                    return False
+            else:
+                self.log_result("Get User Conversations", False, f"Status code: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Get User Conversations", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_get_conversations_without_auth(self):
+        """Test getting conversations without authentication"""
+        try:
+            response = requests.get(f"{self.base_url}/messages")
+            
+            if response.status_code == 401:
+                self.log_result("Get Conversations Without Auth", True, "Correctly rejected unauthenticated request")
+                return True
+            else:
+                self.log_result("Get Conversations Without Auth", False, f"Should have failed with 401, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Get Conversations Without Auth", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_send_message(self):
+        """Test sending a message"""
+        if not self.test_product_id:
+            self.log_result("Send Message", False, "No test product ID available")
+            return False
+        
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            payload = {
+                "recipient_id": self.test_user_id,  # Sending to self for testing
+                "product_id": self.test_product_id,
+                "content": "Hi! I'm interested in this product. Is it still available?"
+            }
+            
+            response = requests.post(f"{self.base_url}/messages", json=payload, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "id" in data and "content" in data:
+                    self.log_result("Send Message", True, f"Message sent successfully with ID: {data['id']}")
+                    return True
+                else:
+                    self.log_result("Send Message", False, "Missing id or content in response", data)
+                    return False
+            else:
+                self.log_result("Send Message", False, f"Status code: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Send Message", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_send_message_without_auth(self):
+        """Test sending message without authentication"""
+        try:
+            payload = {
+                "recipient_id": "test-user-id",
+                "product_id": "test-product-id",
+                "content": "Test message"
+            }
+            
+            response = requests.post(f"{self.base_url}/messages", json=payload)
+            
+            if response.status_code == 401:
+                self.log_result("Send Message Without Auth", True, "Correctly rejected unauthenticated request")
+                return True
+            else:
+                self.log_result("Send Message Without Auth", False, f"Should have failed with 401, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Send Message Without Auth", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_send_message_invalid_recipient(self):
+        """Test sending message to non-existent recipient"""
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            payload = {
+                "recipient_id": "non-existent-user-id",
+                "product_id": self.test_product_id or "test-product-id",
+                "content": "Test message"
+            }
+            
+            response = requests.post(f"{self.base_url}/messages", json=payload, headers=headers)
+            
+            if response.status_code == 404:
+                self.log_result("Send Message Invalid Recipient", True, "Correctly rejected invalid recipient")
+                return True
+            else:
+                self.log_result("Send Message Invalid Recipient", False, f"Should have failed with 404, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Send Message Invalid Recipient", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_get_conversation_messages(self):
+        """Test getting messages in a conversation"""
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            # Create a conversation ID (other_user_id_product_id format)
+            conversation_id = f"{self.test_user_id}_{self.test_product_id}"
+            
+            response = requests.get(f"{self.base_url}/messages/{conversation_id}", headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list):
+                    self.log_result("Get Conversation Messages", True, f"Retrieved {len(data)} messages in conversation")
+                    return True
+                else:
+                    self.log_result("Get Conversation Messages", False, "Response is not a list", data)
+                    return False
+            else:
+                self.log_result("Get Conversation Messages", False, f"Status code: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Get Conversation Messages", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_get_conversation_messages_without_auth(self):
+        """Test getting conversation messages without authentication"""
+        try:
+            conversation_id = f"{self.test_user_id}_{self.test_product_id}"
+            response = requests.get(f"{self.base_url}/messages/{conversation_id}")
+            
+            if response.status_code == 401:
+                self.log_result("Get Conversation Messages Without Auth", True, "Correctly rejected unauthenticated request")
+                return True
+            else:
+                self.log_result("Get Conversation Messages Without Auth", False, f"Should have failed with 401, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Get Conversation Messages Without Auth", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_get_conversation_invalid_format(self):
+        """Test getting conversation with invalid ID format"""
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            invalid_conversation_id = "invalid-format"
+            
+            response = requests.get(f"{self.base_url}/messages/{invalid_conversation_id}", headers=headers)
+            
+            if response.status_code == 400:
+                self.log_result("Get Conversation Invalid Format", True, "Correctly rejected invalid conversation ID format")
+                return True
+            else:
+                self.log_result("Get Conversation Invalid Format", False, f"Should have failed with 400, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Get Conversation Invalid Format", False, f"Exception: {str(e)}")
+            return False
+    
+    # NEW API TESTS - User APIs
+    def test_get_public_user_profile(self):
+        """Test getting public user profile"""
+        try:
+            response = requests.get(f"{self.base_url}/users/{self.test_user_id}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "id" in data and "name" in data and "password_hash" not in data:
+                    self.log_result("Get Public User Profile", True, f"Retrieved public profile for user: {data['name']}")
+                    return True
+                else:
+                    self.log_result("Get Public User Profile", False, "Missing required fields or contains sensitive data", data)
+                    return False
+            else:
+                self.log_result("Get Public User Profile", False, f"Status code: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Get Public User Profile", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_get_nonexistent_user_profile(self):
+        """Test getting profile for non-existent user"""
+        try:
+            response = requests.get(f"{self.base_url}/users/non-existent-user-id")
+            
+            if response.status_code == 404:
+                self.log_result("Get Nonexistent User Profile", True, "Correctly returned 404 for non-existent user")
+                return True
+            else:
+                self.log_result("Get Nonexistent User Profile", False, f"Should have failed with 404, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Get Nonexistent User Profile", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_update_own_user_profile(self):
+        """Test updating own user profile"""
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            payload = {
+                "name": "John Doe Updated",
+                "location": "San Francisco, CA",
+                "phone": "+1987654321"
+            }
+            
+            response = requests.put(f"{self.base_url}/users/{self.test_user_id}", json=payload, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "name" in data and data["name"] == "John Doe Updated":
+                    self.log_result("Update Own User Profile", True, f"Profile updated successfully: {data['name']}")
+                    return True
+                else:
+                    self.log_result("Update Own User Profile", False, "Profile not updated correctly", data)
+                    return False
+            else:
+                self.log_result("Update Own User Profile", False, f"Status code: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Update Own User Profile", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_update_user_profile_without_auth(self):
+        """Test updating user profile without authentication"""
+        try:
+            payload = {
+                "name": "Unauthorized Update"
+            }
+            
+            response = requests.put(f"{self.base_url}/users/{self.test_user_id}", json=payload)
+            
+            if response.status_code == 401:
+                self.log_result("Update User Profile Without Auth", True, "Correctly rejected unauthenticated request")
+                return True
+            else:
+                self.log_result("Update User Profile Without Auth", False, f"Should have failed with 401, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Update User Profile Without Auth", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_update_other_user_profile(self):
+        """Test updating another user's profile (should fail)"""
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            payload = {
+                "name": "Unauthorized Update"
+            }
+            
+            # Try to update a different user ID
+            fake_user_id = "different-user-id"
+            response = requests.put(f"{self.base_url}/users/{fake_user_id}", json=payload, headers=headers)
+            
+            if response.status_code == 403:
+                self.log_result("Update Other User Profile", True, "Correctly rejected unauthorized profile update")
+                return True
+            else:
+                self.log_result("Update Other User Profile", False, f"Should have failed with 403, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Update Other User Profile", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_get_user_products(self):
+        """Test getting user's products"""
+        try:
+            response = requests.get(f"{self.base_url}/users/{self.test_user_id}/products")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "products" in data and "total" in data:
+                    products_count = len(data["products"])
+                    self.log_result("Get User Products", True, f"Retrieved {products_count} products for user, total: {data['total']}")
+                    return True
+                else:
+                    self.log_result("Get User Products", False, "Missing products or total in response", data)
+                    return False
+            else:
+                self.log_result("Get User Products", False, f"Status code: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Get User Products", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_get_nonexistent_user_products(self):
+        """Test getting products for non-existent user"""
+        try:
+            response = requests.get(f"{self.base_url}/users/non-existent-user-id/products")
+            
+            if response.status_code == 404:
+                self.log_result("Get Nonexistent User Products", True, "Correctly returned 404 for non-existent user")
+                return True
+            else:
+                self.log_result("Get Nonexistent User Products", False, f"Should have failed with 404, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Get Nonexistent User Products", False, f"Exception: {str(e)}")
+            return False
+    
+    # NEW API TESTS - Product Management APIs
+    def test_update_own_product(self):
+        """Test updating own product"""
+        if not self.test_product_id:
+            self.log_result("Update Own Product", False, "No test product ID available")
+            return False
+        
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            payload = {
+                "title": "Updated Vintage Leather Jacket",
+                "description": "Updated description for this beautiful vintage leather jacket.",
+                "price": 99.99,
+                "condition": "good"
+            }
+            
+            response = requests.put(f"{self.base_url}/products/{self.test_product_id}", json=payload, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "title" in data and data["title"] == "Updated Vintage Leather Jacket":
+                    self.log_result("Update Own Product", True, f"Product updated successfully: {data['title']}")
+                    return True
+                else:
+                    self.log_result("Update Own Product", False, "Product not updated correctly", data)
+                    return False
+            else:
+                self.log_result("Update Own Product", False, f"Status code: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Update Own Product", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_update_product_without_auth(self):
+        """Test updating product without authentication"""
+        if not self.test_product_id:
+            self.log_result("Update Product Without Auth", False, "No test product ID available")
+            return False
+        
+        try:
+            payload = {
+                "title": "Unauthorized Update"
+            }
+            
+            response = requests.put(f"{self.base_url}/products/{self.test_product_id}", json=payload)
+            
+            if response.status_code == 401:
+                self.log_result("Update Product Without Auth", True, "Correctly rejected unauthenticated request")
+                return True
+            else:
+                self.log_result("Update Product Without Auth", False, f"Should have failed with 401, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Update Product Without Auth", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_update_nonexistent_product(self):
+        """Test updating non-existent product"""
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            payload = {
+                "title": "Updated Title"
+            }
+            
+            response = requests.put(f"{self.base_url}/products/non-existent-product-id", json=payload, headers=headers)
+            
+            if response.status_code == 404:
+                self.log_result("Update Nonexistent Product", True, "Correctly returned 404 for non-existent product")
+                return True
+            else:
+                self.log_result("Update Nonexistent Product", False, f"Should have failed with 404, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Update Nonexistent Product", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_delete_own_product(self):
+        """Test deleting own product"""
+        if not self.test_product_id:
+            self.log_result("Delete Own Product", False, "No test product ID available")
+            return False
+        
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            response = requests.delete(f"{self.base_url}/products/{self.test_product_id}", headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "message" in data:
+                    self.log_result("Delete Own Product", True, f"Product deleted successfully: {data['message']}")
+                    # Clear the test product ID since it's deleted
+                    self.test_product_id = None
+                    return True
+                else:
+                    self.log_result("Delete Own Product", False, "Missing message in response", data)
+                    return False
+            else:
+                self.log_result("Delete Own Product", False, f"Status code: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Delete Own Product", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_delete_product_without_auth(self):
+        """Test deleting product without authentication"""
+        try:
+            response = requests.delete(f"{self.base_url}/products/test-product-id")
+            
+            if response.status_code == 401:
+                self.log_result("Delete Product Without Auth", True, "Correctly rejected unauthenticated request")
+                return True
+            else:
+                self.log_result("Delete Product Without Auth", False, f"Should have failed with 401, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Delete Product Without Auth", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_delete_nonexistent_product(self):
+        """Test deleting non-existent product"""
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            response = requests.delete(f"{self.base_url}/products/non-existent-product-id", headers=headers)
+            
+            if response.status_code == 404:
+                self.log_result("Delete Nonexistent Product", True, "Correctly returned 404 for non-existent product")
+                return True
+            else:
+                self.log_result("Delete Nonexistent Product", False, f"Should have failed with 404, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Delete Nonexistent Product", False, f"Exception: {str(e)}")
+            return False
+    
     def run_all_tests(self):
         """Run all tests in sequence"""
         print("=" * 60)
