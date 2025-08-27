@@ -35,7 +35,7 @@ const ProductCard = ({ product, onFavorite, onProductClick }) => {
           {/* Condition Badge */}
           <div className="absolute top-3 left-3">
             <div className="bg-black/80 backdrop-blur-sm px-2 py-1 rounded-md">
-              <span className="text-xs font-medium text-white">{product.condition}</span>
+              <span className="text-xs font-spartan font-medium text-white">{product.condition}</span>
             </div>
           </div>
         </div>
