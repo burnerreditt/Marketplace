@@ -7,6 +7,12 @@ module.exports = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			'sans': ['League Spartan', 'system-ui', 'sans-serif'],
+  			'serif': ['Libre Baskerville', 'Georgia', 'serif'],
+  			'spartan': ['League Spartan', 'sans-serif'],
+  			'baskerville': ['Libre Baskerville', 'serif']
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
