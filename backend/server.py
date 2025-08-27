@@ -577,7 +577,7 @@ async def update_user_profile(user_id: str, update_data: UserUpdate, current_use
 async def get_user_products(user_id: str, page: int = 1, limit: int = 20):
     """Get user's active listings"""
     # Verify user exists
-    user = await db.users.find_one({"id": user_id})
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
