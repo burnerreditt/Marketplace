@@ -364,7 +364,7 @@ async def get_user_favorites(current_user: dict = Depends(get_current_user)):
     # Get product details for each favorite
     favorite_products = []
     for fav in favorites:
-        product = await db.products.find_one({"id": fav["product_id"]})
+        product = await db.products.find_one({"id": fav["product_id"]}, {"_id": 0})
         if product:
             favorite_products.append(product)
     
